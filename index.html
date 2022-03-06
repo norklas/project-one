@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Where to Wander</title>
     <!-- TailwindCSS CDN-->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" integrity="sha512-wnea99uKIC3TJF7v4eKk4Y+lMz2Mklv18+r4na2Gn1abDRPPOeef95xTzdwGD9e6zXJBteMIhZ1+68QC5byJZw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
   <body>
     <header>
@@ -17,7 +17,7 @@
       <section>
         <div id="search-container">
           <form id="search-form">
-            <input type="text" value="Enter City" id="search-value" />
+            <input type="text" placeholder="Enter State Abbreviation" id="search-value" />
             <input type="submit" value="Submit" id="search-btn" />
           </form>
         </div>
@@ -41,6 +41,27 @@
           <article id="weather-info"></article>
         </div>
       </section>
+
+      <!-- Modal -->
+      <div class="hidden overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-4 z-50 justify-center items-center md:inset-0 h-modal sm:h-full" id="popup-modal">
+        <div class="relative px-4 w-full max-w-md h-full md:h-auto">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <!-- Modal header -->
+                <div class="flex justify-end p-2">
+                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white" data-modal-toggle="popup-modal">
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="p-6 pt-0 text-center">
+                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Please enter correct state abbreviation!</h3>
+                    <button data-modal-toggle="popup-modal" type="button" id="close-btn" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     </main>
 
     <footer>
