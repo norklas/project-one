@@ -10,6 +10,7 @@ var modalCloseBtn = document.getElementById("close-btn");
 var modalErrorText = document.getElementById("error-text");
 var cardContainer = document.getElementById("card-container");
 var campInfo = document.getElementById("camp-info");
+var weatherInfo = document.getElementById("weather-info");
 
 // Submit button handler
 function formSubmitHandler(e) {
@@ -20,6 +21,7 @@ function formSubmitHandler(e) {
 
   if (stateCode) {
     campgroundData(stateCode);
+    weatherData(stateCode);
     searchInput.value = "";
   } else {
     modalErrorText.textContent = "Please enter correct state abbreviation!";
@@ -27,124 +29,120 @@ function formSubmitHandler(e) {
   }
 }
 
-function allData(stateCode) {
-  var campgrounds, weather;
-
+// Function to fetch campground data
+function campgroundData(stateCode) {
   fetch(
     `https://developer.nps.gov/api/v1/campgrounds?stateCode=${stateCode}&limit=4&api_key=${campgroundApiKey}`
-  )
-    .then(function (response) {
-      return response.json();
-    })
-    .then(function (data) {
-      console.log(data);
-
-      campgrounds = data;
-
-      for (var i = 0; i < campgrounds.data.length; i++) {
-        var campLong = campgrounds.data[i].longitude;
-        var campLat = campgrounds.data[i].latitude;
-
-        fetch(
-          `https://api.openweathermap.org/data/2.5/onecall?lat=${campLat}&lon=${campLong}&exclude=minutely,hourly,daily,alerts&units=imperial&appid=${openWeatherApiKey}`
-        )
-          .then(function (response) {
-            return response.json();
-          })
-          .then(function (data) {
-            console.log(data);
-
-            weather = data;
-          });
-      }
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+  ).then(function (response) {
+    if (response.ok) {
+      return response.json().then(function (data) {
+        // console.log(data);
+        displayCampgroundInfo(data, stateCode);
+      });
+    } else {
+      modalErrorText.textContent = "No campground data found";
+      modalEl.style.display = "block";
+    }
+  });
 }
 
-// Function to fetch campground data
-// function campgroundData(stateCode) {
-//   fetch(
-//     `https://developer.nps.gov/api/v1/campgrounds?stateCode=${stateCode}&limit=4&api_key=${campgroundApiKey}`
-//   ).then(function (response) {
-//     if (response.ok) {
-//       response.json().then(function (data) {
-//         console.log(data);
-//         displayCampgroundInfo(data, stateCode);
-//       });
-//     } else {
-//       modalErrorText.textContent = "No campground data found";
-//       modalEl.style.display = "block";
-//     }
-//   });
-// }
+function weatherData(stateCode) {
+  fetch(
+    `https://developer.nps.gov/api/v1/campgrounds?stateCode=${stateCode}&limit=4&api_key=${campgroundApiKey}`
+  ).then(function (response) {
+    if (response.ok) {
+      return response.json().then(function (data) {
+        // console.log(data);
 
-// function displayCampgroundInfo(campgrounds) {
-//   console.log(campgrounds);
-//   if (campgrounds.data.length === 0) {
-//     modalErrorText.textContent = "No campgrounds found";
-//     modalEl.style.display = "block";
-//     return;
-//   }
+        var campgrounds = data;
 
-//   // Clear old content
-//   campInfo.innerHTML = "";
+        for (var i = 0; i < campgrounds.data.length; i++) {
+          var campLong = campgrounds.data[i].longitude;
+          var campLat = campgrounds.data[i].latitude;
 
-//   // Loop over campgrounds
-//   for (var i = 0; i < campgrounds.data.length; i++) {
-//     // Campground name
-//     var campgroundName = campgrounds.data[i].name;
+          fetch(
+            `https://api.openweathermap.org/data/2.5/onecall?lat=${campLat}&lon=${campLong}&exclude=minutely,hourly,daily,alerts&units=imperial&appid=${openWeatherApiKey}`
+          )
+            .then(function (response) {
+              return response.json();
+            })
+            .then(function (data) {
+              //   console.log(data);
 
-//     // Creating title element, and appending it to camp info article within card container
-//     var titleEl = document.createElement("span");
-//     titleEl.textContent = campgroundName;
+              weather = data;
+              displayWeatherInfo(weather, campgrounds);
+            });
+        }
+      });
+    }
+  });
+}
 
-//     campInfo.appendChild(titleEl);
+function displayCampgroundInfo(campgrounds) {
+  console.log(campgrounds);
 
-//     // Creating image element, grabbing image url through data array, setting size, and appending it
-//     var imgEl = document.createElement("img");
-//     imgEl.setAttribute("src", campgrounds.data[i].images[0].url);
-//     imgEl.setAttribute("class", "object-cover h-60 w-60");
+  // Clear old content
+  campInfo.innerHTML = "";
 
-//     campInfo.appendChild(imgEl);
+  // Loop over campgrounds
+  for (var i = 0; i < campgrounds.data.length; i++) {
+    // Campground name
+    var campgroundName = campgrounds.data[i].name;
 
-//     // Creating p elements for address
-//     var cityEl = document.createElement("p");
-//     cityEl.textContent = "City: " + campgrounds.data[i].addresses[0].city;
+    // Creating title element, and appending it to camp info article within card container
+    var titleEl = document.createElement("span");
+    titleEl.textContent = campgroundName;
 
-//     var lineOneEl = document.createElement("p");
-//     lineOneEl.textContent =
-//       "Address: " + campgrounds.data[i].addresses[0].line1;
+    campInfo.appendChild(titleEl);
 
-//     var postalEl = document.createElement("p");
-//     postalEl.textContent =
-//       "Zip Code: " + campgrounds.data[i].addresses[0].postalCode;
+    // Creating image element, grabbing image url through data array, setting size, and appending it
+    var imgEl = document.createElement("img");
+    imgEl.setAttribute("src", campgrounds.data[i].images[0].url);
+    imgEl.setAttribute("class", "object-cover h-60 w-60");
 
-//     var stateCodeEl = document.createElement("p");
-//     stateCodeEl.textContent =
-//       "State: " + campgrounds.data[i].addresses[0].stateCode;
+    campInfo.appendChild(imgEl);
 
-//     campInfo.appendChild(cityEl);
-//     campInfo.appendChild(lineOneEl);
-//     campInfo.appendChild(postalEl);
-//     campInfo.appendChild(stateCodeEl);
+    // Creating p elements for address
+    var cityEl = document.createElement("p");
+    cityEl.textContent = "City: " + campgrounds.data[i].addresses[0].city;
 
-//     // Creating p element for cost
-//     var costEl = document.createElement("p");
-//     costEl.textContent =
-//       "Cost: $" + campgrounds.data[i].fees[0].cost + " per night";
+    var lineOneEl = document.createElement("p");
+    lineOneEl.textContent =
+      "Address: " + campgrounds.data[i].addresses[0].line1;
 
-//     campInfo.appendChild(costEl);
+    var postalEl = document.createElement("p");
+    postalEl.textContent =
+      "Zip Code: " + campgrounds.data[i].addresses[0].postalCode;
 
-//     // Creating anchor element for more info
-//     var linkEl = document.createElement("a");
-//     linkEl.setAttribute("href", campgrounds.data[i].url);
-//     linkEl.innerText = "View more info";
+    var stateCodeEl = document.createElement("p");
+    stateCodeEl.textContent =
+      "State: " + campgrounds.data[i].addresses[0].stateCode;
 
-//     campInfo.appendChild(linkEl);
-//   }
-// }
+    campInfo.appendChild(cityEl);
+    campInfo.appendChild(lineOneEl);
+    campInfo.appendChild(postalEl);
+    campInfo.appendChild(stateCodeEl);
+
+    // Creating p element for cost
+    var costEl = document.createElement("p");
+    costEl.textContent =
+      "Cost: $" + campgrounds.data[i].fees[0].cost + " per night";
+
+    campInfo.appendChild(costEl);
+
+    // Creating anchor element for more info
+    var linkEl = document.createElement("a");
+    linkEl.setAttribute("href", campgrounds.data[i].url);
+    linkEl.innerText = "View more info";
+
+    campInfo.appendChild(linkEl);
+  }
+}
+
+function displayWeatherInfo(weather) {
+  console.log(weather);
+  weatherInfo.innerHTML = "";
+}
 
 // Function to close modal
 window.onclick = function (event) {
