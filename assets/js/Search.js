@@ -18,13 +18,13 @@ function invokePastSearch(event){
 // render function
 function loadlastCity(){
     $("ul").empty();
-    var sCity = JSON.parse(localStorage.getItem("state"));
-    if(sCity!==null){
-        sCity=JSON.parse(localStorage.getItem("state"));
-        for(i=0; i<sCity.length;i++){
+    var sState = JSON.parse(localStorage.getItem("state"));
+    if(sState!==null){
+        sState=JSON.parse(localStorage.getItem("state"));
+        for(i=0; i<sState.length;i++){
             addToList(sCity[i]);
         }
-        city=sCity[i-1];
+        state=sState[i-1];
         currentcampground(city);
     }
 
@@ -32,6 +32,6 @@ function loadlastCity(){
 //Clear the search history from the page
 function clearHistory(event){
     event.preventDefault();
-    sCity=[];
+    sState=[];
     localStorage.removeItem("state");
     document.location.reload();
