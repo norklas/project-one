@@ -1,28 +1,26 @@
-// API Keys
-var openWeatherApiKey = "bb50ceaa5c96b3d1b021c2c7a46d82b6";
+// API Key
 var campgroundApiKey = "Bmz374aWCDdIEBnTNdAjjyehjiMRkPJpJqGoY9qC";
 
 // Elements
-var searchFormEl = document.getElementById("search-form");
-var searchInput = document.getElementById("search-value");
-var modalEl = document.getElementById("popup-modal");
-var modalCloseBtn = document.getElementById("close-btn");
-var modalErrorText = document.getElementById("error-text");
-var cardContainer = document.getElementById("card-container");
-var campInfo = document.getElementById("camp-info");
-var weatherInfo = document.getElementById("weather-info");
+var searchFormEl = $("#search-form");
+var searchInput = $("#search-value");
+var modalEl = $("#popup-modal");
+var modalCloseBtn = $("#close-btn");
+var modalErrorText = $("#error-text");
+var cardSection = $("#card-section");
+var cardContainer = $("#card-container");
+var campCards = $("#camp-cards");
 
 // Submit button handler
 function formSubmitHandler(e) {
   e.preventDefault();
 
   // Grabbing value of search input and feeding it into the campgroundData function
-  var stateCode = searchInput.value.trim();
+  var stateCode = searchInput.val().trim();
 
   if (stateCode) {
     campgroundData(stateCode);
-    weatherData(stateCode);
-    searchInput.value = "";
+    searchInput.val("");
   } else {
     modalErrorText.textContent = "Please enter correct state abbreviation!";
     modalEl.style.display = "block";
@@ -46,102 +44,80 @@ function campgroundData(stateCode) {
   });
 }
 
-function weatherData(stateCode) {
-  fetch(
-    `https://developer.nps.gov/api/v1/campgrounds?stateCode=${stateCode}&limit=4&api_key=${campgroundApiKey}`
-  ).then(function (response) {
-    if (response.ok) {
-      return response.json().then(function (data) {
-        // console.log(data);
-
-        var campgrounds = data;
-
-        for (var i = 0; i < campgrounds.data.length; i++) {
-          var campLong = campgrounds.data[i].longitude;
-          var campLat = campgrounds.data[i].latitude;
-
-          fetch(
-            `https://api.openweathermap.org/data/2.5/onecall?lat=${campLat}&lon=${campLong}&exclude=minutely,hourly,daily,alerts&units=imperial&appid=${openWeatherApiKey}`
-          )
-            .then(function (response) {
-              return response.json();
-            })
-            .then(function (data) {
-              //   console.log(data);
-
-              weather = data;
-              displayWeatherInfo(weather, campgrounds);
-            });
-        }
-      });
-    }
-  });
-}
-
+// Function to display campground information
 function displayCampgroundInfo(campgrounds) {
   console.log(campgrounds);
 
   // Clear old content
-  campInfo.innerHTML = "";
+  //cardSection.html("");
 
   // Loop over campgrounds
   for (var i = 0; i < campgrounds.data.length; i++) {
+    // Articles for camp cards
+    var campInfo = $("<article>");
+    campCards.append(campInfo);
+
+    // Creating image element, grabbing image url through data array, setting size, and appending it
+    var imgEl = $("<img>");
+    imgEl.attr("src", campgrounds.data[i].images[0].url);
+    imgEl.addClass("object-cover h-60 w-60");
+
+    campInfo.append(imgEl);
+
     // Campground name
     var campgroundName = campgrounds.data[i].name;
 
     // Creating title element, and appending it to camp info article within card container
-    var titleEl = document.createElement("span");
-    titleEl.textContent = campgroundName;
+    var titleEl = $("<span>");
+    titleEl.append(campgroundName);
 
-    campInfo.appendChild(titleEl);
-
-    // Creating image element, grabbing image url through data array, setting size, and appending it
-    var imgEl = document.createElement("img");
-    imgEl.setAttribute("src", campgrounds.data[i].images[0].url);
-    imgEl.setAttribute("class", "object-cover h-60 w-60");
-
-    campInfo.appendChild(imgEl);
+    campInfo.append(titleEl);
 
     // Creating p elements for address
-    var cityEl = document.createElement("p");
-    cityEl.textContent = "City: " + campgrounds.data[i].addresses[0].city;
+    var descriptionEl = $("<p>");
+    descriptionEl.text("Description: " + campgrounds.data[i].description);
 
-    var lineOneEl = document.createElement("p");
-    lineOneEl.textContent =
-      "Address: " + campgrounds.data[i].addresses[0].line1;
+    var campsitesEl = $("<p>");
+    campsitesEl.text(
+      "Total sites: " + campgrounds.data[i].campsites.totalSites
+    );
 
-    var postalEl = document.createElement("p");
-    postalEl.textContent =
-      "Zip Code: " + campgrounds.data[i].addresses[0].postalCode;
+    var operatingDescriptionEl = $("<p>");
+    operatingDescriptionEl.text(
+      "Operating description: " +
+        campgrounds.data[i].operatingHours[0].description
+    );
 
-    var stateCodeEl = document.createElement("p");
-    stateCodeEl.textContent =
-      "State: " + campgrounds.data[i].addresses[0].stateCode;
+    var operatingHoursListEl = $("<ul>");
 
-    campInfo.appendChild(cityEl);
-    campInfo.appendChild(lineOneEl);
-    campInfo.appendChild(postalEl);
-    campInfo.appendChild(stateCodeEl);
+    campInfo.append(operatingDescriptionEl);
+    campInfo.append(operatingHoursListEl);
+    campInfo.append(descriptionEl);
+    campInfo.append(campsitesEl);
 
     // Creating p element for cost
-    var costEl = document.createElement("p");
-    costEl.textContent =
-      "Cost: $" + campgrounds.data[i].fees[0].cost + " per night";
+    var costEl = $("<p>");
+    costEl.text("Cost: $" + campgrounds.data[i].fees[0].cost + " per night");
 
-    campInfo.appendChild(costEl);
+    campInfo.append(costEl);
+
+    // Creating phone number element
+    var phoneEl = $("<a>");
+    phoneEl.attr(
+      "href",
+      campgrounds.data[i].contacts.phoneNumbers[0].phoneNumber
+    );
+    phoneEl.text(campgrounds.data[i].contacts.phoneNumbers[0].phoneNumber);
+
+    campInfo.append(phoneEl);
 
     // Creating anchor element for more info
-    var linkEl = document.createElement("a");
-    linkEl.setAttribute("href", campgrounds.data[i].url);
-    linkEl.innerText = "View more info";
+    var linkEl = $("<a>");
+    linkEl.attr("href", campgrounds.data[i].url);
+    linkEl.text("View more info");
 
-    campInfo.appendChild(linkEl);
+    campInfo.append(linkEl);
   }
-}
-
-function displayWeatherInfo(weather) {
-  console.log(weather);
-  weatherInfo.innerHTML = "";
 }
 
 // Function to close modal
@@ -151,4 +127,4 @@ window.onclick = function (event) {
   }
 };
 
-searchFormEl.addEventListener("submit", formSubmitHandler);
+searchFormEl.on("submit", formSubmitHandler);
