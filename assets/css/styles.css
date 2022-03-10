@@ -1,0 +1,79 @@
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: #283618;
+  color: #606c38;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#wrapper {
+  flex: 1;
+}
+
+header {
+  background-color: #606c38;
+}
+
+h1 {
+  color: #fefae0;
+}
+
+footer {
+  background-color: #606c38;
+  color: #fefae0;
+}
+
+#card-info {
+  background-color: #fefae0;
+  border: #bc6c25 solid 2px;
+}
+
+#card-btn {
+  background-color: #dda15e;
+  color: #fefae0;
+}
+
+#card-btn:hover {
+  background-color: #bc6c25;
+}
+
+button {
+  background-color: #dda15e;
+  color: #fefae0;
+}
+
+button:hover {
+  background-color: #bc6c25;
+}
+
+#search-btn {
+  background-color: #dda15e;
+  color: #fefae0;
+}
+
+#search-btn:hover {
+  background-color: #bc6c25;
+}
+
+#list-item {
+  background-color: #dda15e;
+  color: #fefae0;
+}
+
+#list-item:hover {
+  background-color: #bc6c25;
+}
+
+#popup-color {
+  background-color: #fefae0;
+}
+
+#close-btn {
+  background-color: #dda15e;
+  color: #fefae0;
+}
+
+#close-btn:hover {
+  background-color: #bc6c25;
+}
