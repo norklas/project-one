@@ -4,12 +4,20 @@ var campgroundApiKey = "Bmz374aWCDdIEBnTNdAjjyehjiMRkPJpJqGoY9qC";
 // Elements
 var searchFormEl = $("#search-form");
 var searchInput = $("#search-value");
+var searchHistory = $("#search-history");
 var modalEl = $("#popup-modal");
 var modalCloseBtn = $("#close-btn");
 var modalErrorText = $("#error-text");
 var cardSection = $("#card-section");
 var cardContainer = $("#card-container");
 var campCards = $("#camp-cards");
+var clearBtn = $("#clear-btn");
+var ul = $("<ul>");
+let stateArray = localStorage.getItem("state")
+  ? JSON.parse(localStorage.getItem("state"))
+  : [];
+localStorage.setItem("state", JSON.stringify(stateArray));
+var data = JSON.parse(localStorage.getItem("state"));
 
 // Submit button handler
 function formSubmitHandler(e) {
@@ -17,6 +25,11 @@ function formSubmitHandler(e) {
 
   // Grabbing value of search input and feeding it into the campgroundData function
   var stateCode = searchInput.val().trim();
+
+  stateArray.push(searchInput.val().trim());
+  localStorage.setItem("state", JSON.stringify(stateArray));
+  liMaker(stateCode);
+  searchInput.value = "";
 
   if (stateCode) {
     campgroundData(stateCode);
@@ -120,6 +133,59 @@ function displayCampgroundInfo(campgrounds) {
   }
 }
 
+// render function
+function loadlastState() {
+  $("<ul>").empty();
+  var sState = JSON.parse(localStorage.getItem("state"));
+  if (sState !== null) {
+    sState = JSON.parse(localStorage.getItem("state"));
+    for (i = 0; i < sState.length; i++) {
+      addToList(sState[i]);
+    }
+    stateCode = sState[i - 1];
+    campgroundData(stateCode);
+  }
+}
+
+const liMaker = (stateCode) => {
+  const li = $("<li>");
+  const ul = $("<ul>");
+  li.text(stateCode);
+  ul.append(li);
+  searchHistory.append(ul);
+};
+
+data.forEach((stateCode) => {
+  liMaker(stateCode);
+});
+
+clearBtn.on("click", function () {
+  localStorage.clear();
+  $("ul").empty();
+  itemsArray = [];
+});
+
+//Dynamically add the passed state on the search history
+function addToList(s) {
+  var listEl = $("<li>" + s.toUpperCase() + "</li>");
+  $(listEl).attr("class", "list-group-item");
+  $(listEl).attr("data-value", s.toUpperCase());
+  $(".list-group").append(listEl);
+}
+// display the past search again when the list group item is clicked in search history
+$(searchHistory).on("click", "li", function () {
+  stateCode = $(this).text();
+  campgroundData(stateCode);
+});
+
+//Clear the search history from the page
+function clearHistory(event) {
+  event.preventDefault();
+  sState = [];
+  localStorage.removeItem("state");
+  document.location.reload();
+}
+
 // Function to close modal
 window.onclick = function (event) {
   if (event.target == modalCloseBtn) {
@@ -128,3 +194,4 @@ window.onclick = function (event) {
 };
 
 searchFormEl.on("submit", formSubmitHandler);
+loadlastState();
