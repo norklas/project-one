@@ -55,12 +55,16 @@ function displayCampgroundInfo(campgrounds) {
   for (var i = 0; i < campgrounds.data.length; i++) {
     // Articles for camp cards
     var campInfo = $("<article>");
+    campInfo.addClass(
+      "flex flex-col md:flex-row md:max-w-xl max-w-xs rounded-lg overflow-hidden shadow-xl text-sm"
+    );
+    campInfo.attr("id", "camp-info-card");
     campCards.append(campInfo);
 
     // Creating image element, grabbing image url through data array, setting size, and appending it
     var imgEl = $("<img>");
     imgEl.attr("src", campgrounds.data[i].images[0].url);
-    imgEl.addClass("object-cover h-60 w-60");
+    imgEl.addClass("bg-cover w-full md:w-1/2 h-64 md:h-auto");
 
     campInfo.append(imgEl);
 
@@ -68,36 +72,40 @@ function displayCampgroundInfo(campgrounds) {
     var campgroundName = campgrounds.data[i].name;
 
     // Creating title element, and appending it to camp info article within card container
-    var titleEl = $("<span>");
+    var titleEl = $("<h1>");
     titleEl.append(campgroundName);
+    titleEl.addClass("text-center text-lg font-bold");
 
     campInfo.append(titleEl);
 
     // Creating p elements for address
-    var descriptionEl = $("<p>");
-    descriptionEl.text("Description: " + campgrounds.data[i].description);
+    // var descriptionEl = $("<p>");
+    // descriptionEl.text("Description: " + campgrounds.data[i].description);
+    // descriptionEl.addClass("text-sm");
 
     var campsitesEl = $("<p>");
     campsitesEl.text(
       "Total sites: " + campgrounds.data[i].campsites.totalSites
     );
+    campsitesEl.addClass("pl-2");
 
     var operatingDescriptionEl = $("<p>");
     operatingDescriptionEl.text(
-      "Operating description: " +
-        campgrounds.data[i].operatingHours[0].description
+      campgrounds.data[i].operatingHours[0].description
     );
+    operatingDescriptionEl.addClass("pl-2");
 
     var operatingHoursListEl = $("<ul>");
 
     campInfo.append(operatingDescriptionEl);
     campInfo.append(operatingHoursListEl);
-    campInfo.append(descriptionEl);
+    // campInfo.append(descriptionEl);
     campInfo.append(campsitesEl);
 
     // Creating p element for cost
     var costEl = $("<p>");
     costEl.text("Cost: $" + campgrounds.data[i].fees[0].cost + " per night");
+    costEl.addClass("pl-2");
 
     campInfo.append(costEl);
 
@@ -108,6 +116,7 @@ function displayCampgroundInfo(campgrounds) {
       campgrounds.data[i].contacts.phoneNumbers[0].phoneNumber
     );
     phoneEl.text(campgrounds.data[i].contacts.phoneNumbers[0].phoneNumber);
+    phoneEl.addClass("pl-2");
 
     campInfo.append(phoneEl);
 
@@ -115,6 +124,7 @@ function displayCampgroundInfo(campgrounds) {
     var linkEl = $("<a>");
     linkEl.attr("href", campgrounds.data[i].url);
     linkEl.text("View more info");
+    linkEl.addClass("pl-2");
 
     campInfo.append(linkEl);
   }
