@@ -19,65 +19,62 @@
 </head>
 
 <body>
+  <!-- Header -->
   <header class="flex justify-center items-center px-2 h-20">
     <h1 class="text-5xl font-bold">Where to Wander</h1>
   </header>
 
   <main>
-    <div id="wrapper">
-      <section class="float-left mt-4">
-        <div id="search-container">
-          <form id="search-form" class="ml-2">
-            <input type="text" placeholder="State Abbreviation" id="search-value"
-              class="py-0.5 rounded-lg text-center" />
-            <input type="submit" value="Submit" id="search-btn"
-              class="px-2 py-1 text-black rounded-lg text-sm font-bold" />
-          </form>
-        </div>
+    <!-- Search form -->
+    <section class="lg:float-left sm:flex sm:flex-col sm:justify-center mt-4">
+      <div id="search-container" class="sm:flex sm:justify-center">
+        <form id="search-form" class="ml-2">
+          <input type="text" placeholder="State Abbreviation" id="search-value" class="py-0.5 rounded-lg text-center" />
+          <input type="submit" value="Submit" id="search-btn"
+            class="px-2 py-1 text-black rounded-lg text-sm font-bold" />
+        </form>
+      </div>
+      <!-- Search history -->
+      <div id="search-history-container" class="sm:flex sm:justify-center sm:items-start">
+        <article id="search-history" class="w-48 ml-2"></article>
+        <button id="clear-btn" class="lg:ml-4 rounded-lg w-20 mt-3 font-bold sm:mt-4 sm:ml-3">
+          Clear
+        </button>
+      </div>
+    </section>
 
-        <div id="search-history-container">
-          <article id="search-history"></article>
-          <button id="clear-btn" class="ml-2 rounded-lg w-20 mt-3 font-bold">
-            Clear
-          </button>
-        </div>
-      </section>
+    <!-- Card section, dynamically filled with JS/jQuery -->
+    <section id="card-section" class="w-2/3 mx-auto">
+      <div id="card-container">
+        <div id="camp-cards" class="flex justify-center flex-wrap justify-around flex-row"></div>
+      </div>
+    </section>
 
-      <section id="card-section" class="w-2/3 mx-auto">
-        <div id="card-container">
-          <div id="camp-cards" class="flex justify-center flex-wrap justify-around flex-row"></div>
-        </div>
-      </section>
-
-      <!-- Modal -->
-      <div
-        class="hidden overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-4 z-50 justify-center items-center md:inset-0 h-modal sm:h-full"
-        id="popup-modal">
-        <div class="relative px-4 w-full max-w-md h-full md:h-auto">
-          <!-- Modal content -->
-          <div class="relative bg-white rounded-lg shadow dark:bg-gray-700" id="popup-color">
-            <!-- Modal header -->
-            <div class="flex justify-end p-2">
-              <button type="button"
-                class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white"
-                data-modal-toggle="popup-modal"></button>
-            </div>
-            <!-- Modal body -->
-            <div class="p-6 pt-0 text-center">
-              <h3 id="error-text" class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400"></h3>
-              <button data-modal-toggle="popup-modal" type="button" id="close-btn"
-                class="text-white rounded-lg text-sm font-bold inline-flex items-center px-5 py-2.5 text-center mr-2">
-                Close
-              </button>
-            </div>
+    <!-- Main modal -->
+    <div id="popup-modal" aria-hidden="true"
+      class="hidden overflow-x-hidden overflow-y-auto fixed h-modal md:h-full top-52 left-0 right-0 md:inset-0 z-50 justify-center items-center">
+      <div class="relative w-full max-w-2xl px-4 h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="rounded-lg shadow relative" id="popup-color">
+          <!-- Modal body -->
+          <div class="p-6 space-y-6" id="modal-body">
+            <p class="text-center leading-relaxed text-lg font-semibold" id="modal-body-text"></p>
+          </div>
+          <!-- Modal footer -->
+          <div class="flex space-x-2 items-center p-6 rounded-b justify-center">
+            <button data-modal-toggle="popup-modal" type="button"
+              class="font-medium rounded-lg text-sm px-5 py-2.5 text-center font-bold" id="close-btn">
+              Close
+            </button>
           </div>
         </div>
       </div>
     </div>
   </main>
 
+  <!--Footer -->
   <footer class="text-center px-2 mt-2">
-    <h4 class="text-2xl font-bold">
+    <h4 class="text-2xl font-bold sm:text-lg">
       Helping you find places to inspire wonder
     </h4>
     <div class="font-semibold">
@@ -85,7 +82,7 @@
       Nick, Kerri, Matt, and Ryan!
     </div>
   </footer>
-  </div>
+
   <!-- JQuery CDN -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -93,84 +90,3 @@
 </body>
 
 </html>
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-
-<body>
-    
-    
-
-<section class="hero">
-    <div class="hero-content">
-    <h1 class="hero-title">Where To Wander
-    </h1>
-    <h4 class="hero-subtitle">Locate the perfect spot to camp.
-    </h4>
-    </div>
-    <div class="hero-form">
-
-          
-    
-<div class="col-12 col-md-3 cont-left">
-    <div class="card">
-        <h2 class="card-header">Search for a Campsite:</h2>
-    <form action="submit">
-        <label for="search-city">Enter City</label>
-        <input type="text" id="search-city" name="search-city">
-        <button id="search-btn">Search</button>
-    </form>
-    </div>
- </div>
-
-  <section id="campsites">
-      <div class="flex-column">
-          <h2 class="section-title primary-border">
-              Your Recent Searches
-          </h2>
-          <ol>
-              <li></li>
-              <li></li>
-              <li></li>
-          </ol>
-      </div>
-</section>
-
-<div class="col-12 col-md-5 cont-mid">
-    <div class="card">
-        <h2 class="card-header">Area Campsites</h2>
-        <ul>
-            <li></li>
-            <li></li>
-        </ul>
-    </div>
-</div>
-
-<div class="col-12 col-md-4 cont-right">
-    <div class="card">
-        <h2 class="card-header">Weather in the Area</h2>
-        <ul>
-            <li></li>
-            <li></li>
-        </ul>
-    </div>
-</div>
-
-<script src=""></script>
-<script src=""></script>   
-</body>
-
-<footer>
-    <h4>Helping you find places to inspire wonder</h4></br>
-    <div>
-        &copy; 2022 Team Project One 
-    </div>
-</footer>
-</html>
--->
