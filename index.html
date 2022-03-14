@@ -1,14 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Where to Wander</title>
-    <!-- TailwindCSS CDN-->
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body>
-    <script src="./assets/js/script.js"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Where to Wander</title>
+  <!-- TailwindCSS CDN-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+    integrity="sha512-wnea99uKIC3TJF7v4eKk4Y+lMz2Mklv18+r4na2Gn1abDRPPOeef95xTzdwGD9e6zXJBteMIhZ1+68QC5byJZw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet" />
+  <!-- CSS -->
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="flex justify-center items-center px-2 h-20">
+    <h1 class="text-5xl font-bold">Where to Wander</h1>
+  </header>
+
+  <main>
+    <!-- Search form -->
+    <section class="lg:float-left sm:flex sm:flex-col sm:justify-center mt-4">
+      <div id="search-container" class="sm:flex sm:justify-center">
+        <form id="search-form" class="ml-2">
+          <input type="text" placeholder="State Abbreviation" id="search-value" class="py-0.5 rounded-lg text-center" />
+          <input type="submit" value="Submit" id="search-btn"
+            class="px-2 py-1 text-black rounded-lg text-sm font-bold" />
+        </form>
+      </div>
+      <!-- Search history -->
+      <div id="search-history-container" class="sm:flex sm:justify-center sm:items-start">
+        <article id="search-history" class="w-48 ml-2"></article>
+        <button id="clear-btn" class="lg:ml-4 rounded-lg w-20 mt-3 font-bold sm:mt-4 sm:ml-3">
+          Clear
+        </button>
+      </div>
+    </section>
+
+    <!-- Card section, dynamically filled with JS/jQuery -->
+    <section id="card-section" class="w-2/3 mx-auto">
+      <div id="card-container">
+        <div id="camp-cards" class="flex justify-center flex-wrap justify-around flex-row"></div>
+      </div>
+    </section>
+
+    <!-- Main modal -->
+    <div id="popup-modal" aria-hidden="true"
+      class="hidden overflow-x-hidden overflow-y-auto fixed h-modal md:h-full top-52 left-0 right-0 md:inset-0 z-50 justify-center items-center">
+      <div class="relative w-full max-w-2xl px-4 h-full md:h-auto">
+        <!-- Modal content -->
+        <div class="rounded-lg shadow relative" id="popup-color">
+          <!-- Modal body -->
+          <div class="p-6 space-y-6" id="modal-body">
+            <p class="text-center leading-relaxed text-lg font-semibold" id="modal-body-text"></p>
+          </div>
+          <!-- Modal footer -->
+          <div class="flex space-x-2 items-center p-6 rounded-b justify-center">
+            <button data-modal-toggle="popup-modal" type="button"
+              class="font-medium rounded-lg text-sm px-5 py-2.5 text-center font-bold" id="close-btn">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!--Footer -->
+  <footer class="text-center px-2 mt-2">
+    <h4 class="text-2xl font-bold sm:text-lg">
+      Helping you find places to inspire wonder
+    </h4>
+    <div class="font-semibold">
+      &copy; 2022 Made with <span style="color: #e25555">&#9829;</span> by
+      Nick, Kerri, Matt, and Ryan!
+    </div>
+  </footer>
+
+  <!-- JQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="./assets/js/script.js"></script>
+</body>
+
 </html>

@@ -1,0 +1,123 @@
+/* Variables */
+:root {
+  --background-color: #283618;
+  --olive-green: #606c38;
+  --off-white: #fefae0;
+  --light-orange: #dda15e;
+  --dark-orange: #bc6c25;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: var(--background-color);
+  color: var(--olive-green);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+/* Header Styling Begins */
+header {
+  background-color: var(--olive-green);
+}
+
+h1 {
+  color: var(--off-white);
+}
+
+/* Header Styling Ends */
+
+/* Footer Styling Begins */
+
+footer {
+  background-color: var(--olive-green);
+  color: var(--off-white);
+}
+
+/* Footer Styling Ends */
+
+/* Card Styling Begins */
+
+#card-info {
+  background-color: var(--off-white);
+  border: var(--dark-orange) solid 2px;
+}
+
+#card-btn {
+  background-color: var(--light-orange);
+  color: var(--off-white);
+}
+
+#card-btn:hover {
+  background-color: var(--dark-orange);
+}
+
+#map-btn {
+  background-color: var(--light-orange);
+  color: var(--off-white);
+}
+
+#map-btn:hover {
+  background-color: var(--dark-orange);
+}
+
+/* Card Styling Ends */
+
+/* Clear Button Styling Begins */
+
+button {
+  background-color: var(--light-orange);
+  color: var(--off-white);
+}
+
+button:hover {
+  background-color: var(--dark-orange);
+}
+
+/* Clear button Styling Ends */
+
+/* Search Styling Begins */
+
+#search-btn {
+  background-color: var(--light-orange);
+  color: var(--off-white);
+}
+
+#search-btn:hover {
+  background-color: var(--dark-orange);
+}
+
+#list-item {
+  background-color: var(--light-orange);
+  color: var(--off-white);
+}
+
+#list-item:hover {
+  background-color: var(--dark-orange);
+}
+
+/* Search Styling Ends */
+
+/* Modal Styling Begins */
+
+#popup-color {
+  background-color: var(--off-white);
+}
+
+#modal-body-text {
+  color: var(--olive-green);
+}
+
+#close-btn {
+  background-color: var(--light-orange);
+  color: var(--off-white);
+}
+
+#close-btn:hover {
+  background-color: var(--dark-orange);
+}
+/* Modal Styling Ends */
