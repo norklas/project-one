@@ -1,5 +1,7 @@
-// API Key
+// API Keys
 var campgroundApiKey = "Bmz374aWCDdIEBnTNdAjjyehjiMRkPJpJqGoY9qC";
+var mapApiKey =
+  "pk.eyJ1Ijoibm9ya2xhcyIsImEiOiJja29haGN6Y2wwMHk4MnhwM2o2Ymc2YzJnIn0.cIu1zrch0el1XJPqoY3zFw";
 
 // Elements
 var searchFormEl = $("#search-form");
@@ -12,7 +14,13 @@ var cardSection = $("#card-section");
 var cardContainer = $("#card-container");
 var campCards = $("#camp-cards");
 var clearBtn = $("#clear-btn");
-var ul = $("<ul>");
+var modalBody = $("#modal-body");
+var modalText = $("#modal-body-text");
+
+// Global variables for map latitude and longitude
+var campLong;
+var campLat;
+
 let stateArray = localStorage.getItem("state")
   ? JSON.parse(localStorage.getItem("state"))
   : [];
@@ -26,16 +34,21 @@ function formSubmitHandler(e) {
   // Grabbing value of search input and feeding it into the campgroundData function
   var stateCode = searchInput.val().trim();
 
+  // Pushing search value to stateArray
   stateArray.push(searchInput.val().trim());
+  // Setting local storage to "state", and stringifying the array that holds the state information
   localStorage.setItem("state", JSON.stringify(stateArray));
+  // Calling list maker function with stateCode to make text the state abbreviation
   liMaker(stateCode);
+  // Reset search input
   searchInput.value = "";
 
+  // Checking if stateCode = true, then calling campgroundData function with stateCode parameter, and resetting search input, else show error modal
   if (stateCode) {
     campgroundData(stateCode);
     searchInput.val("");
   } else {
-    $(modalErrorText).text("Please enter correct state abbreviation!");
+    $(modalText).text("Please enter correct state abbreviation!");
     $(modalEl).css("display", "block");
   }
 }
@@ -47,11 +60,11 @@ function campgroundData(stateCode) {
   ).then(function (response) {
     if (response.ok) {
       return response.json().then(function (data) {
-        // console.log(data);
+        // If response is okay, then call displayCampgroundInfo
         displayCampgroundInfo(data, stateCode);
       });
-    } else {
-      $(modalErrorText).text("No campground data found");
+    } else if (stateCode === false) {
+      $(modalText).text("Please enter correct state abbreviation!");
       $(modalEl).css("display", "block");
     }
   });
@@ -59,13 +72,15 @@ function campgroundData(stateCode) {
 
 // Function to display campground information
 function displayCampgroundInfo(campgrounds) {
-  console.log(campgrounds);
-
   // Clear old content
   $(campCards).html("");
 
   // Loop over campgrounds
   for (var i = 0; i < campgrounds.data.length; i++) {
+    // Get camp longitude and camp latitude for Mapbox API
+    campLong = campgrounds.data[i].longitude;
+    campLat = campgrounds.data[i].latitude;
+
     // Articles for camp cards
     var campInfo = $("<article>");
     campCards.append(campInfo);
@@ -129,12 +144,26 @@ function displayCampgroundInfo(campgrounds) {
     linkEl.text("Read more");
 
     infoDiv.append(linkEl);
+
+    // Mapbox API to display map of location
+    var mapEl = $("<a>");
+    mapEl.attr(
+      "href",
+      `https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-s+555555(${campLong},${campLat})/${campLong},${campLat},7,0/400x400?access_token=${mapApiKey}`
+    );
+    mapEl.attr("id", "map-btn");
+    mapEl.attr("target", "_blank");
+    mapEl.addClass(
+      "inline-flex items-center py-2 px-3 mt-4 ml-2 text-sm font-medium text-center rounded-lg focus:ring-4 font-bold"
+    );
+    mapEl.text("View Map");
+
+    infoDiv.append(mapEl);
   }
 }
 
-// render function
-function loadlastState() {
-  $("<ul>").empty();
+// Function to load last page state
+function loadLastState() {
   var sState = JSON.parse(localStorage.getItem("state"));
   if (sState !== null) {
     sState = JSON.parse(localStorage.getItem("state"));
@@ -146,52 +175,54 @@ function loadlastState() {
   }
 }
 
-const liMaker = (stateCode) => {
-  const li = $("<li>");
+// List maker function, which takes stateCode, creates unordered list, and list item then add classes/attributes, and append to search history article
+function liMaker(stateCode) {
+  var li = $("<li>");
   li.addClass("ml-2 mt-4 w-48 text-center rounded-lg");
   li.attr("id", "list-item");
-  const ul = $("<ul>");
+  var ul = $("<ul>");
+  ul.attr("id", "list-container");
   li.text(stateCode);
-  ul.append(li);
-  searchHistory.append(ul);
-};
+  // If statement to check if #list-container exists, if it does, do not append more unordered lists
+  if ($("#list-container").length === 0) {
+    searchHistory.append(ul);
+  }
+  $("#list-container").append(li);
+}
 
+// For each stateCode, call liMaker and create list from stateCode
 data.forEach((stateCode) => {
   liMaker(stateCode);
 });
 
+// Clear button functionality, upon clicking, clear localStorage, empty unordered list, and reload page
 clearBtn.on("click", function () {
   localStorage.clear();
   $("ul").empty();
-  //itemsArray = [];
   document.location.reload();
 });
 
-//Dynamically add the passed state on the search history
+// Dynamically add the passed state on the search history
 function addToList(s) {
   var listEl = $("<li>" + s.toUpperCase() + "</li>");
   $(listEl).attr("class", "list-group-item");
   $(listEl).attr("data-value", s.toUpperCase());
   $(".list-group").append(listEl);
 }
-// display the past search again when the list group item is clicked in search history
+
+// Display the past search again when the list group item is clicked in search history
 $(searchHistory).on("click", "li", function () {
   stateCode = $(this).text();
   campgroundData(stateCode);
 });
-
-//Clear the search history from the page
-function clearHistory(event) {
-  event.preventDefault();
-  sState = [];
-  localStorage.removeItem("state");
-  document.location.reload();
-}
 
 // Function to close modal
 $(modalEl).on("click", "button", function () {
   $(modalEl).css("display", "none");
 });
 
+// On form submit, call formSubmitHandler
 searchFormEl.on("submit", formSubmitHandler);
-loadlastState();
+
+// Calling loadLastState function
+loadLastState();
